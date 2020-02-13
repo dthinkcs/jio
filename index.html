@@ -1,0 +1,99 @@
+<html>
+    <head>
+        <title>Jio Price</title>
+    </head>
+    <div id="root">
+
+        <input type="text" class="money" value="" />
+        <input type="text" class="gb" value="" />
+        <h3 class="moneyPerGb" >
+        <br>
+    
+        <input type="text" class="gp" value="9.2" />
+        <input type="text" class="gp" value="8.9" />
+        <input type="text" class="gp" value="8.25" />
+        <input type="text" class="gp" />
+        <input type="text" class="gp" />
+        <input type="text" class="gp" value="9"/>
+        <button onclick="compute()" > Compute </button>        
+    </div>
+    
+    <script>
+      
+      let moneys = [2020, 555, 399, 199, 149, 599, 444, 249, 349]; // should be a way {money: gb: } without copyPasting moneyGb
+      let gbs =    [547.5,126, 84,  42,  24,  168,  112, 56, 84];
+
+
+
+
+      // could have used map
+      function fillDefaultValues() {
+
+          let s = "";
+          for (let i = 0; i < moneys.length; i++) {
+              s += `
+                <input type="text" class="money" value="${moneys[i]}" />
+                <input type="text" class="gb" value="${gbs[i]}" />
+                <h3 class="moneyPerGb"> </h3>
+                <h2 class="moneyPerGbDiscount" style="color: red"> </h2>
+                <br>
+                <hr>
+              `;
+          }
+          s +=  `<button onclick="compute()" > Compute </button>`;     
+
+          document.getElementById("root").innerHTML = s;
+      }
+      fillDefaultValues();
+      compute();
+
+      
+      function compute() {
+        let moneyNodes = document.getElementsByClassName("money");
+        let gbNodes = document.getElementsByClassName("gb");
+        let moneyPerGbNodes = document.getElementsByClassName("moneyPerGb");
+        let moneyPerGbDiscountNodes = document.getElementsByClassName("moneyPerGbDiscount");
+
+
+        let moneysAndGbs =  []; //MONEY VALUE ORIGINALindex
+        for (let i = 0; i < gbs.length; i++) {
+            moneysAndGbs.push([Number(moneyNodes[i].value), Number(gbNodes[i].value), i]);
+        }
+        moneysAndGbs.sort(function(a, b){return a[0]/a[1] - b[0]/b[1]})
+        console.log(moneysAndGbs);
+        let moneysAndGbsDiscount =  [];
+        for (let i = 0; i < gbs.length; i++) {
+            moneysAndGbsDiscount.push([Number(moneyNodes[i].value) - 50, Number(gbNodes[i].value), i]);
+        }
+        moneysAndGbsDiscount.sort(function(a, b){return a[0]/a[1] - b[0]/b[1]})
+        console.log(moneysAndGbsDiscount);
+
+
+        let ranks = new Array(moneysAndGbs.length);
+        for (let i = 0; i < moneysAndGbs.length; i++)
+            ranks[moneysAndGbs[i][2]] = i + 1;
+
+        let ranksDiscount = new Array(moneys.length);
+        for (let i = 0; i < ranks.length; i++)
+            ranksDiscount[moneysAndGbsDiscount[i][2]] = i + 1;
+
+
+        // price
+        for (let i = 0; i < moneyNodes.length; i++) {
+            // console.log((moneyNodes[i].value));
+          moneyPerGbNodes[i].innerHTML = String(Number(moneyNodes[i].value) / Number(gbNodes[i].value)) + " Rank: " + ranks[i];
+          moneyPerGbDiscountNodes[i].innerHTML = String(Number(moneyNodes[i].value - 50) / Number(gbNodes[i].value)) + " Rank: " + ranksDiscount[i];
+          
+        }
+
+
+        
+        
+      }
+
+
+      
+    </script>
+
+
+</html>
